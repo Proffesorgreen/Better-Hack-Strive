@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SendHorizonal, Bot, User } from "lucide-react";
 import { Navigation } from "@/components/navigation";
+import { authClient } from "@/lib/betterauth-client";
 
 export default function AIChat() {
+  // Use the session hook to check if the user is logged in
+  const { data: session, isPending } = authClient.useSession();
+  
+  // State for the token we will send to the Go backend
+  const [apiToken, setApiToken] = useState<string | null>(null);
   const [messages, setMessages] = useState([
     {
       role: "bot",
@@ -14,8 +20,30 @@ export default function AIChat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // If the user is logged in, fetch a JWT for our Go API
+    if (session) {
+      const getApiToken = async () => {
+        const { data } = await authClient.token(); // Fetch from /api/auth/token
+        if (data?.token) {
+          setApiToken(data.token);
+        }
+      };
+      getApiToken();
+    } else {
+      // If the user logs out, clear the token
+      setApiToken(null);
+    }
+  }, [session]); // Dependency array ensures this runs when `session` object changes
+
   const handleSend = async () => {
     if (!input.trim()) return;
+
+    // Check for the API token before sending
+    if (!apiToken) {
+      setMessages(prev => [...prev, { role: "bot", text: "❌ Error: You must be logged in to use the chat." }]);
+      return;
+    }
 
     const newMessages = [...messages, { role: "user", text: input }];
     setMessages(newMessages);
@@ -25,9 +53,12 @@ export default function AIChat() {
     try {
       const res = await fetch("http://localhost:8080/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          // ADD THE BEARER TOKEN HERE
+          "Authorization": `Bearer ${apiToken}`,
+        },
         body: JSON.stringify({ prompt: input }),
-        credentials: "include",
       });
 
       const data = await res.json();
@@ -38,9 +69,11 @@ export default function AIChat() {
           { role: "bot", text: `❌ Error: ${data.error || "Something went wrong"}` },
         ]);
       } else {
+        // Assuming the Go backend now returns the JSON directly
+        const formattedJson = JSON.stringify(data, null, 2);
         setMessages([
           ...newMessages,
-          { role: "bot", text: data.response || "✅ Response received." },
+          { role: "bot", text: "```json\n" + formattedJson + "\n```" },
         ]);
       }
     } catch {

@@ -23,7 +23,7 @@ export default function SignInPage() {
     await authClient.signIn.email({
       email: data.email as string,
       password: data.password as string,
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     }, {
       onError: (ctx) => setError(ctx.error.message),
     }).finally(() => setIsSubmitting(false));
@@ -35,7 +35,7 @@ export default function SignInPage() {
     setError(null);
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
     // No need for finally, as the page will redirect
   };

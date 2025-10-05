@@ -24,7 +24,7 @@ export default function SignUpPage() {
       name: data.name as string,
       email: data.email as string,
       password: data.password as string,
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     }, {
       onError: (ctx) => setError(ctx.error.message),
     }).finally(() => setIsSubmitting(false));
@@ -36,7 +36,7 @@ export default function SignUpPage() {
     setError(null);
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
   };
 

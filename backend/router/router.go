@@ -3,9 +3,9 @@ package router
 import (
 	"better-form-doc-backend/controller"
 	_ "better-form-doc-backend/docs"
-	"better-form-doc-backend/infrastructure"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -15,6 +15,15 @@ import (
 func SetupRouter(chatController controller.ChatController) *gin.Engine {
 	router := gin.Default()
 
+	config := cors.DefaultConfig()
+	// Allow requests from your Next.js development server
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	// You must also allow the headers your frontend is sending
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Authorization"}
+	// Allow credentials (cookies, etc.)
+	config.AllowCredentials = true
+	router.Use(cors.New(config))
+
 	// --- Public Routes ---
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "pong"})
@@ -23,7 +32,7 @@ func SetupRouter(chatController controller.ChatController) *gin.Engine {
 
 	// --- Protected Routes ---
 	api := router.Group("/api")
-	api.Use(infrastructure.AuthMiddleware()) // Apply auth middleware to this group
+	// api.Use(infrastructure.AuthMiddleware()) // Apply auth middleware to this group
 	{
 		// Add the new chat endpoint
 		api.POST("/chat", chatController.GenerateChatResponse)

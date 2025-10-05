@@ -1,3 +1,7 @@
-import { createAuthClient } from "better-auth/react" // make sure to import from better-auth/react
+import { createAuthClient } from "better-auth/react"
+import { jwtClient } from "better-auth/client/plugins";
 
-export const authClient =  createAuthClient()
+export const authClient =  createAuthClient({
+  // 2. ADD THE PLUGIN to the client instance
+  plugins: [jwtClient()],
+})

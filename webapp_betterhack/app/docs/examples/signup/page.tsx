@@ -77,7 +77,7 @@ export default function SignupPage() {
     
     if (response.ok) {
       // Redirect to dashboard or login
-      window.location.href = "/dashboard"
+      window.location.href = "/"
     }
   }
 
