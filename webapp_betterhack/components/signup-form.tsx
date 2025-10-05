@@ -1,20 +1,38 @@
-import { Button } from "@/components/ui/button"
+// @/components/signup-form.tsx
+'use client'; // This component now has client-side interaction
+
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
-export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+// 1. Define the props our component will accept
+interface SignupFormProps extends React.ComponentProps<typeof Card> {
+  onSignupSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  isLoading?: boolean;
+  error?: string | null;
+}
+
+export function SignupForm({
+  className,
+  onSignupSubmit, // Destructure the new props
+  isLoading = false,
+  error = null,
+  ...props
+}: SignupFormProps) {
   return (
     <Card {...props}>
       <CardHeader>
@@ -24,47 +42,55 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        {/* 2. Attach the passed-in onSignupSubmit handler */}
+        <form onSubmit={onSignupSubmit}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="name">Full Name</FieldLabel>
-              <Input id="name" type="text" placeholder="John Doe" required />
+              {/* 3. Add name attribute and disable on load */}
+              <Input id="name" name="name" type="text" placeholder="John Doe" required disabled={isLoading} />
             </Field>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
+                name="email" // Add name attribute
                 type="email"
                 placeholder="m@example.com"
                 required
+                disabled={isLoading}
               />
-              <FieldDescription>
-                We&apos;ll use this to contact you. We will not share your email
-                with anyone else.
-              </FieldDescription>
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input id="password" type="password" required />
+              <Input id="password" name="password" type="password" required disabled={isLoading} />
               <FieldDescription>
                 Must be at least 8 characters long.
               </FieldDescription>
             </Field>
             <Field>
-              <FieldLabel htmlFor="confirm-password">
-                Confirm Password
-              </FieldLabel>
-              <Input id="confirm-password" type="password" required />
-              <FieldDescription>Please confirm your password.</FieldDescription>
+              <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
+              <Input id="confirm-password" name="confirmPassword" type="password" required disabled={isLoading} />
             </Field>
             <FieldGroup>
               <Field>
-                <Button type="submit">Create Account</Button>
-                <Button variant="outline" type="button">
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {/* 4. Show loading state */}
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                </Button>
+                <Button variant="outline" type="button" className="w-full" disabled={isLoading}>
                   Sign up with Google
                 </Button>
-                <FieldDescription className="px-6 text-center">
-                  Already have an account? <a href="#">Sign in</a>
+                
+                {/* 5. Display any errors passed from the parent */}
+                {error && <p className="text-sm text-center text-red-500">{error}</p>}
+
+                <FieldDescription className="text-center">
+                  Already have an account?{' '}
+                  {/* 6. Use Next.js Link for better navigation */}
+                  <Link href="/auth/signin" className="underline-offset-4 hover:underline">
+                    Sign in
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -72,5 +98,5 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
