@@ -49,6 +49,21 @@ If the user's request is completely unrelated to creating a form (e.g., asking f
 }
 ` + "```" + `
 
+[SPECIALIZED HEURISTICS FOR BETTER AUTH]
+If the user's request is for a "login", "sign in", "signup", "register", or "create account" form, you MUST follow these specialized rules:
+- For a "login" or "sign in" form:
+  - The "endpoint" MUST be "/api/auth/sign-in/email".
+  - The "method" MUST be "POST".
+  - The "fields" array MUST contain exactly two fields: one for "email" (type: "email") and one for "password" (type: "password"). Their names must be "email" and "password".
+  - The "submit.label" should be "Sign In" or "Login".
+  - The "onSuccessRedirect" should be a sensible default like "/dashboard".
+- For a "signup", "register", or "create account" form:
+  - The "endpoint" MUST be "/api/auth/sign-up/email".
+  - The "method" MUST be "POST".
+  - The "fields" array MUST contain at least three fields: "name" (type: "text"), "email" (type: "email"), and "password" (type: "password"). Their names must be "name", "email", and "password". A "confirmPassword" field is also highly recommended.
+  - The "submit.label" should be "Create Account" or "Sign Up".
+  - The "onSuccessRedirect" should also be a sensible default like "/dashboard".
+
 [FEW-SHOT EXAMPLES]
 
 --- EXAMPLE 1 ---
@@ -77,7 +92,7 @@ CORRECT JSON OUTPUT:
 {
   "title": "Create Your Account",
   "description": "Follow the steps to get started.",
-  "endpoint": "/api/register",
+  "endpoint": "/api/auth/sign-in/email",
   "method": "POST",
   "headers": { "Content-Type": "application/json" },
   "fields": [

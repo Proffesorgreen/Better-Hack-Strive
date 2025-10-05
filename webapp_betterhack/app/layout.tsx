@@ -1,5 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Geist, Geist_Mono } from "next/font/google"
 import { Suspense } from "react"
 import "./globals.css"
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        <Suspense fallback={null}>{children}</Suspense>
+        <Suspense fallback={null}>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </Suspense>
       </body>
     </html>
   )

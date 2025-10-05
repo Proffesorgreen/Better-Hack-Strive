@@ -1,63 +1,75 @@
-// @/app/signup/page.tsx
-'use client'; // This page now handles client-side state and events
+// app/auth/signup/page.tsx
+'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { authClient } from '@/lib/betterauth-client'; // Import our Better Auth client
-import { SignupForm } from '@/components/signup-form';
+import { authClient } from '@/lib/betterauth-client';
+import { FormBuilder } from '@/components/FormBuilder';
+import { signupFormConfig } from '@/forms/signupFormConfig';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-export default function Page() {
-  const [isLoading, setIsLoading] = useState(false);
+export default function SignUpPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Define the submission logic in the parent
-  const handleSignupSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
+  // Custom action for the FormBuilder
+  const handleSignupSubmit = async (data: Record<string, unknown>) => {
+    setIsSubmitting(true);
     setError(null);
 
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const confirmPassword = formData.get('confirmPassword') as string;
-
-    // 1. Add client-side validation for matching passwords
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      setIsLoading(false);
-      return; // Stop the submission
-    }
-
-    // 2. Use the Better Auth client to sign up
     await authClient.signUp.email({
-      name,
-      email,
-      password,
-      callbackURL: "/chat", // Where to redirect after successful signup
+      name: data.name as string,
+      email: data.email as string,
+      password: data.password as string,
+      callbackURL: "/dashboard",
     }, {
-      onSuccess: () => {
-        // Library handles redirection. You can also manually redirect:
-        // router.push('/chat');
-      },
-      onError: (ctx) => {
-        // Display error message from the API
-        setError(ctx.error.message);
-        setIsLoading(false);
-      },
+      onError: (ctx) => setError(ctx.error.message),
+    }).finally(() => setIsSubmitting(false));
+  };
+  
+  // Separate handler for Google Sign-In
+  const handleGoogleSignIn = async () => {
+    setIsSubmitting(true);
+    setError(null);
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
     });
   };
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        {/* 3. Pass the state and handler down as props */}
-        <SignupForm
-          onSignupSubmit={handleSignupSubmit}
-          isLoading={isLoading}
-          error={error}
+        <FormBuilder
+          config={signupFormConfig}
+          onSubmitAction={handleSignupSubmit}
+          isSubmitting={isSubmitting}
+          submissionError={error}
         />
+        <div className="relative mt-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          </div>
+        </div>
+        <Card className="mt-6">
+          <CardContent className="p-6">
+            <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={isSubmitting}>
+              {isSubmitting ? 'Redirecting...' : 'Sign up with Google'}
+            </Button>
+            <p className="mt-4 px-6 text-center text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/auth/signin" className="underline hover:text-primary">
+                Sign in
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
