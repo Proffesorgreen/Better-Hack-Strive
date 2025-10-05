@@ -54,8 +54,8 @@ export default function BuildPage() {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <div className="pt-16 h-screen flex flex-col">
-        <div className="border-b border-border bg-card/50 px-6 py-4">
+      <div className="pt-16 h-screen flex flex-col my-4 mx-4 md:mx-8 lg:mx-16 border border-border rounded-lg overflow-hidden">
+        <div className="border-b border-border bg-card/50 px-6 py-4 ">
           <h1 className="text-2xl font-bold">Playground</h1>
           <p className="text-sm text-muted-foreground">Edit the JSON schema and see the form update in real-time</p>
         </div>

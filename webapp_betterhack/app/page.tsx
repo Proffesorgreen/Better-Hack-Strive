@@ -13,15 +13,15 @@ export default function HomePage() {
       <section className="container mx-auto px-6 pt-32 pb-20">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div className="inline-block">
-            <span className="text-sm font-mono text-accent">Declarative Auth Forms</span>
+            <span className="text-sm font-mono text-accent">Better Forms</span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-balance">
-            Declarative Auth Forms for Better Auth
+            Build Better Forms, Faster
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
-            Generate authentication UIs from JSON Schema, styled with shadcn/ui
+       Design accessible, responsive, and fully customizable forms — powered by JSON Schema and styled with shadcn/ui.
           </p>
-          <div className="flex items-center justify-center gap-4 pt-4">
+          <div className="flex items-center justify-center gap-4 pt-4 ">
             <Button asChild size="lg">
               <Link href="/docs">Get Started</Link>
             </Button>
@@ -97,7 +97,7 @@ export default function HomePage() {
       {/* Features Section */}
       <section className="container mx-auto px-6 py-20">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Why Declarative Auth Forms?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Why Better Forms?</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="bg-card border-border">
               <CardHeader>
