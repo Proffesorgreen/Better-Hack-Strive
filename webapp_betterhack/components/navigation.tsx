@@ -9,7 +9,7 @@ export function Navigation() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
             <Triangle className="h-5 w-5 fill-foreground" />
-            <span className="font-semibold text-lg">Declarative Auth Forms</span>
+            <span className="font-semibold text-lg">Better Forms</span>
           </Link>
           <div className="hidden md:flex items-center gap-6">
             <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -22,7 +22,7 @@ export function Navigation() {
               Build
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/Proffesorgreen/Better-Hack-Strive"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
