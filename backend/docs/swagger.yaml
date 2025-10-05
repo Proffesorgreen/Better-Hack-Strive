@@ -1,0 +1,68 @@
+basePath: /api
+definitions:
+  controller.ChatRequest:
+    properties:
+      prompt:
+        type: string
+    required:
+    - prompt
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: A secure, stateless API to interact with Google's Gemini AI.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go Stateless Chat API
+  version: "1.0"
+paths:
+  /chat:
+    post:
+      consumes:
+      - application/json
+      description: Accepts a user prompt and returns a JSON response from the Gemini
+        AI model.
+      parameters:
+      - description: User's prompt for the AI
+        in: body
+        name: prompt
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ChatRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      security:
+      - BearerAuth: []
+      summary: Generate a chat response from the AI
+      tags:
+      - chat
+securityDefinitions:
+  BearerAuth:
+    description: '"Type ''Bearer'' followed by a space and a JWT."'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
