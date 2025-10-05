@@ -21,6 +21,9 @@ export function Navigation() {
             <Link href="/build" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Build
             </Link>
+            <Link href="/chat" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Chat
+            </Link>
             <a
               href="https://github.com/Proffesorgreen/Better-Hack-Strive"
               target="_blank"
